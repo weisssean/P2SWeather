@@ -3,13 +3,17 @@ package com.p2s.weatherforecast.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.p2s.weatherforecast.R;
 import com.p2s.weatherforecast.classes.Weather;
+
+import java.text.SimpleDateFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +28,12 @@ public class CurrentWeatherFragment extends Fragment {
     private TextView txt_humidity;
     private TextView txt_windSpeed;
     private TextView txt_date;
-    private Weather mWeather;
+
+     private Weather mWeather;
+    private View ll_tempHolder;
+    private View ll_minMaxHolder;
+    private TextView txt_temperatureMin;
+    private TextView txt_temperatureMax;
 
 
     public static CurrentWeatherFragment newInstance() {
@@ -49,9 +58,13 @@ public class CurrentWeatherFragment extends Fragment {
         txt_lng = (TextView) v.findViewById(R.id.txt_lng);
         txt_summary = (TextView) v.findViewById(R.id.txt_summary);
         txt_temperature = (TextView) v.findViewById(R.id.txt_temperature);
+        txt_temperatureMin = (TextView) v.findViewById(R.id.txt_temperatureMin);
+        txt_temperatureMax = (TextView) v.findViewById(R.id.txt_temperatureMax);
         txt_humidity =(TextView) v.findViewById(R.id.txt_humidity);
         txt_windSpeed =(TextView) v.findViewById(R.id.txt_windSpeed);
         txt_date =(TextView) v.findViewById(R.id.txt_date);
+        ll_tempHolder = v.findViewById(R.id.ll_tempHolder);
+        ll_minMaxHolder = v.findViewById(R.id.ll_minMaxHolder);
 
         return v;
     }
@@ -86,9 +99,26 @@ public class CurrentWeatherFragment extends Fragment {
             txt_lng.setText(weather.getLng() + "");
             txt_summary.setText(weather.getSummary());
             txt_temperature.setText(weather.getTemperature());
+            txt_temperatureMin.setText(weather.getTemperatureMin());
+            txt_temperatureMax.setText(weather.getTemperatureMax());
+
+            if (TextUtils.isEmpty(weather.getTemperature())){
+                ll_tempHolder.setVisibility(View.GONE);
+                ll_minMaxHolder.setVisibility(View.VISIBLE);
+            }else {
+                ll_tempHolder.setVisibility(View.VISIBLE);
+                ll_minMaxHolder.setVisibility(View.GONE);
+            }
+
             txt_humidity.setText(weather.getHumidity() + "");
             txt_windSpeed.setText(weather.getWindSpeed() + "");
-            txt_date.setText(weather.getTime().toString());
+
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+            String date = format.format(weather.getTime());
+
+
+            txt_date.setText(date);
         }
     }
 

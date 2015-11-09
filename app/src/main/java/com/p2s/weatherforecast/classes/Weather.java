@@ -12,6 +12,9 @@ public class Weather implements Serializable {
     private double windSpeed;
     private String summary;
     private String temperature;
+    private String temperatureMin;
+    private String temperatureMax;
+
     private int lng;
     private String lat;
 
@@ -46,5 +49,13 @@ public class Weather implements Serializable {
     public Date getTime() {
 
         return new Date(time*1000);
+    }
+
+    public String getTemperatureMin() {
+        return temperatureMin;
+    }
+
+    public String getTemperatureMax() {
+        return temperatureMax;
     }
 }
