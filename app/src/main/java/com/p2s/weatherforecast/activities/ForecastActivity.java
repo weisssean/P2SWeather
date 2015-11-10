@@ -272,8 +272,10 @@ public class ForecastActivity extends AppCompatActivity implements
                 LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    mInited=false;
                     mGoogleApiClient.reconnect();
-                    getWeatherFromDarkSkyByLatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                //    getWeatherFromDarkSkyByLatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                 } else {
                     showEnableLocationDialog();
@@ -299,8 +301,7 @@ public class ForecastActivity extends AppCompatActivity implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null && !mInited) {
             mInited = true;
             getWeatherFromDarkSkyByLatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());

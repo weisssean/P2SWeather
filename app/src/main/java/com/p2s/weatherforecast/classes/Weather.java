@@ -1,6 +1,10 @@
 package com.p2s.weatherforecast.classes;
 
+import android.content.Context;
+import android.view.View;
+
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -14,8 +18,10 @@ public class Weather implements Serializable {
     private String temperature;
     private String temperatureMin;
     private String temperatureMax;
+    private double cloudCover;
+    private String icon;
 
-    private int lng;
+    private String lng;
     private String lat;
 
     public Weather() {
@@ -25,7 +31,7 @@ public class Weather implements Serializable {
         return lat;
     }
 
-    public double getLng() {
+    public String getLng() {
         return lng;
     }
 
@@ -35,15 +41,18 @@ public class Weather implements Serializable {
     }
 
     public String getTemperature() {
-        return temperature;
+        return temperature!=null?temperature+" ℉":"";
     }
 
-    public double getHumidity() {
-        return humidity;
+    public String getHumidity() {
+
+        int retval = (int) (humidity*100);
+
+        return  retval+"%";
     }
 
-    public double getWindSpeed() {
-        return windSpeed;
+    public String getWindSpeed() {
+        return windSpeed+" mph";
     }
 
     public Date getTime() {
@@ -52,10 +61,18 @@ public class Weather implements Serializable {
     }
 
     public String getTemperatureMin() {
-        return temperatureMin;
+        return temperatureMin+" ℉";
     }
 
     public String getTemperatureMax() {
-        return temperatureMax;
+        return temperatureMax+" ℉";
+    }
+
+    public double getCloudCover() {
+        return cloudCover;
+    }
+
+    public String getIcon() {
+        return icon;
     }
 }

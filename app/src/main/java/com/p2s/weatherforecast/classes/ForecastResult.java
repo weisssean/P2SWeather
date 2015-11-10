@@ -12,11 +12,6 @@ public class ForecastResult {
     private Weather currently;
     private DailyWeather daily;
 
-
-    public ForecastResult(Object body) {
-        Log.d("",body.toString());
-    }
-
     public Weather getCurrently() {
         return currently;
     }

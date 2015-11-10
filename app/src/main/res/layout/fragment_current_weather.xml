@@ -4,34 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context="com.p2s.weatherforecast.fragments.CurrentWeatherFragment">
+    tools:context="com.p2s.weatherforecast.fragments.CurrentWeatherFragment"
+    android:id="@+id/ll_frag_bg">
 
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/txt_lat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <TextView
-            android:id="@+id/txt_lng"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,12 +38,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Summary:"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/txt_summary"
@@ -171,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Winf Speed:"
+            android:text="Wind Speed:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
