@@ -1,12 +1,7 @@
 package com.p2s.weatherforecast.activities;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,13 +22,12 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.p2s.weatherforecast.R;
+import com.p2s.weatherforecast.WeatherApp;
 import com.p2s.weatherforecast.classes.ForecastResult;
 import com.p2s.weatherforecast.fragments.CurrentWeatherFragment;
 import com.p2s.weatherforecast.interfaces.ForecastService;
@@ -49,23 +43,12 @@ import retrofit.Retrofit;
 
 public class ForecastActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ViewPager.OnPageChangeListener  {
-    private final static String API_KEY = "203bf0976335ed98863b556ed9f61f79";
-    private final static String DARK_SKY_URL = "https://api.forecast.io";
     private final static String TAG = "ForecastActivity";
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    //private final static String API_KEY = "203bf0976335ed98863b556ed9f61f79";
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     private ForecastService service;
     private CurrentWeatherFragment[] mCurrentWeatherFragments = new CurrentWeatherFragment[6];
@@ -103,16 +86,7 @@ public class ForecastActivity extends AppCompatActivity implements
 
         getSupportActionBar().setSubtitle(mSectionsPagerAdapter.getPageTitle(0));
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(DARK_SKY_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        service = retrofit.create(ForecastService.class);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -190,7 +164,7 @@ public class ForecastActivity extends AppCompatActivity implements
     }
 
     private void getWeatherFromDarkSkyByLatLng(double lat, double lng) {
-        Call<ForecastResult> call = service.forecast(API_KEY, lat, lng);
+        Call<ForecastResult> call = WeatherApp.getWeatherService().forecast(lat, lng);
         call.enqueue(new Callback<ForecastResult>() {
             @Override
             public void onResponse(Response<ForecastResult> response, Retrofit retrofit) {

@@ -12,7 +12,9 @@ import retrofit.http.Path;
  * Created by MonkeyFish on 11/9/15.
  */
 public interface ForecastService {
-    @GET("/forecast/{APIKEY}/{LATITUDE},{LONGITUDE}")
-    Call<ForecastResult> forecast(@Path("APIKEY")String apiKey,@Path("LATITUDE")double lat,@Path("LONGITUDE") double lng);
+     final static String API_KEY = "203bf0976335ed98863b556ed9f61f79";
+
+    @GET("/forecast/"+API_KEY+"/{LATITUDE},{LONGITUDE}")
+    Call<ForecastResult> forecast(@Path("LATITUDE")double lat,@Path("LONGITUDE") double lng);
 
 }

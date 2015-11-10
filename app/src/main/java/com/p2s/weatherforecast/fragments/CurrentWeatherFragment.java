@@ -31,8 +31,6 @@ public class CurrentWeatherFragment extends Fragment {
 
     public static CurrentWeatherFragment newInstance() {
         CurrentWeatherFragment frag = new CurrentWeatherFragment();
-
-
         return frag;
     }
 

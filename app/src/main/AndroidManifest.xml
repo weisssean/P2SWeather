@@ -3,6 +3,7 @@
     package="com.p2s.weatherforecast" >
 
     <application
+        android:name=".WeatherApp"
         android:allowBackup="true"
         android:icon="@mipmap/weather_launcher"
         android:label="@string/app_name"
