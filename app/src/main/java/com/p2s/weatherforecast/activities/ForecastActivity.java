@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -24,39 +23,33 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.p2s.weatherforecast.R;
 import com.p2s.weatherforecast.WeatherApp;
 import com.p2s.weatherforecast.classes.ForecastResult;
 import com.p2s.weatherforecast.fragments.CurrentWeatherFragment;
-import com.p2s.weatherforecast.interfaces.ForecastService;
 
 import java.text.SimpleDateFormat;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
 public class ForecastActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ViewPager.OnPageChangeListener  {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ViewPager.OnPageChangeListener {
     private final static String TAG = "ForecastActivity";
+    private String mSubtitle;
 
-    //private final static String API_KEY = "203bf0976335ed98863b556ed9f61f79";
+    private boolean mInited = false;
 
+    private ForecastResult mForecastResult;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private ViewPager mViewPager;
-    private ForecastService service;
     private CurrentWeatherFragment[] mCurrentWeatherFragments = new CurrentWeatherFragment[6];
+
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private boolean mInited = false;
-    private ForecastResult mForecastResult;
-    private CharSequence mSubtitle;
 
 
     @Override
@@ -70,28 +63,23 @@ public class ForecastActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-
         for (int i = 0; i < 6; i++) {
             mCurrentWeatherFragments[i] = CurrentWeatherFragment.newInstance();
         }
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
 
-        getSupportActionBar().setSubtitle(mSectionsPagerAdapter.getPageTitle(0));
-
-
-
+        mSubtitle = mSectionsPagerAdapter.getPageTitle(0).toString();
+        setSubTitle(mSubtitle);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(onRefreshClickListener);
     }
+
 
     @Override
     protected void onPause() {
@@ -103,47 +91,23 @@ public class ForecastActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
 
-
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildGoogleApiClient();
             mGoogleApiClient.reconnect();
         } else {
             showEnableLocationDialog();
 
         }
-
-
     }
-   private void showEnableLocationDialog(){
 
-       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-               ForecastActivity.this);
-       alertDialogBuilder
-               .setMessage("GPS is disabled in your device. Enable it?")
-               .setCancelable(false)
-               .setPositiveButton("Enable GPS",
-                       new DialogInterface.OnClickListener() {
-                           public void onClick(DialogInterface dialog,
-                                               int id) {
-                               Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                               startActivity(myIntent);
-                           }
-                       });
-       alertDialogBuilder.setNegativeButton("Cancel",
-               new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       dialog.cancel();
-                   }
-               });
-       AlertDialog alert = alertDialogBuilder.create();
-       alert.show();
-   };
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (mSubtitle != null && !TextUtils.isEmpty(mSubtitle))
-            outState.putString("subtitle", mSubtitle.toString());
+        if (mSubtitle != null)
+            outState.putString("subtitle", mSubtitle);
 
         super.onSaveInstanceState(outState);
     }
@@ -155,12 +119,33 @@ public class ForecastActivity extends AppCompatActivity implements
             mSubtitle = savedInstanceState.getString("subtitle");
         }
         if (mSubtitle != null) {
-            try {
-                getSupportActionBar().setSubtitle(mSubtitle);
-            } catch (Exception e) {
-
-            }
+            setSubTitle(mSubtitle);
         }
+    }
+
+    private void showEnableLocationDialog() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                ForecastActivity.this);
+        alertDialogBuilder
+                .setMessage("GPS is disabled in your device. Enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Enable GPS",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(myIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private void getWeatherFromDarkSkyByLatLng(double lat, double lng) {
@@ -246,10 +231,10 @@ public class ForecastActivity extends AppCompatActivity implements
                 LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    mInited=false;
+                    mInited = false;
                     mGoogleApiClient.reconnect();
 
-                //    getWeatherFromDarkSkyByLatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    //    getWeatherFromDarkSkyByLatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                 } else {
                     showEnableLocationDialog();
@@ -261,6 +246,12 @@ public class ForecastActivity extends AppCompatActivity implements
         }
     };
 
+
+    private void setSubTitle(String subtitle) {
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        if (ab != null)
+            ab.setSubtitle(subtitle);
+    }
 
     //==============Location==================================
 
@@ -300,8 +291,8 @@ public class ForecastActivity extends AppCompatActivity implements
 
     @Override
     public void onPageSelected(int position) {
-        mSubtitle = mSectionsPagerAdapter.getPageTitle(position);
-        getSupportActionBar().setSubtitle(mSubtitle);
+        mSubtitle = mSectionsPagerAdapter.getPageTitle(position).toString();
+        setSubTitle(mSubtitle);
     }
 
     @Override
