@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
- * Created by MonkeyFish on 11/9/15.
+ * Created by TacoEater on 11/9/15.
  */
 public class Weather implements Serializable {
     private long time;

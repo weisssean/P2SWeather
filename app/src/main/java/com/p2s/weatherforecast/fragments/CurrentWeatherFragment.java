@@ -14,48 +14,51 @@ import com.p2s.weatherforecast.classes.Weather;
 
 import java.text.SimpleDateFormat;
 
-public class CurrentWeatherFragment extends Fragment {
-    private TextView txt_date;
-    private TextView txt_summary;
-    private TextView txt_humidity;
-    private TextView txt_windSpeed;
-    private TextView txt_temperature;
-    private TextView txt_temperatureMin;
-    private TextView txt_temperatureMax;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private View ll_tempHolder;
-    private View ll_minMaxHolder;
+
+public class CurrentWeatherFragment extends Fragment {
+
+    @BindView(R.id.txt_date)
+    TextView txt_date;
+    @BindView(R.id.txt_summary)
+    TextView txt_summary;
+    @BindView(R.id.txt_humidity)
+    TextView txt_humidity;
+    @BindView(R.id.txt_windSpeed)
+    TextView txt_windSpeed;
+    @BindView(R.id.txt_temperature)
+    TextView txt_temperature;
+    @BindView(R.id.txt_temperatureMin)
+    TextView txt_temperatureMin;
+    @BindView(R.id.txt_temperatureMax)
+    TextView txt_temperatureMax;
+    @BindView(R.id.ll_tempHolder)
+    View ll_tempHolder;
+    @BindView(R.id.ll_minMaxHolder)
+    View ll_minMaxHolder;
 
     private Weather mWeather;
 
 
     public static CurrentWeatherFragment newInstance() {
-        CurrentWeatherFragment frag = new CurrentWeatherFragment();
-        return frag;
+        return new CurrentWeatherFragment();
     }
-
 
     public CurrentWeatherFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_current_weather, container, false);
-        txt_date = (TextView) v.findViewById(R.id.txt_date);
-        txt_summary = (TextView) v.findViewById(R.id.txt_summary);
-        txt_humidity = (TextView) v.findViewById(R.id.txt_humidity);
-        txt_windSpeed = (TextView) v.findViewById(R.id.txt_windSpeed);
-        txt_temperature = (TextView) v.findViewById(R.id.txt_temperature);
-        txt_temperatureMin = (TextView) v.findViewById(R.id.txt_temperatureMin);
-        txt_temperatureMax = (TextView) v.findViewById(R.id.txt_temperatureMax);
+        View rootView = inflater.inflate(R.layout.fragment_current_weather, container, false);
 
-        ll_tempHolder = v.findViewById(R.id.ll_tempHolder);
-        ll_minMaxHolder = v.findViewById(R.id.ll_minMaxHolder);
-        return v;
+        ButterKnife.bind(this, rootView);
+
+        return rootView;
     }
 
     public void setWeather(Weather weather) {
@@ -82,7 +85,7 @@ public class CurrentWeatherFragment extends Fragment {
     }
 
     private void setTextBoxes(Weather weather) {
-        if (txt_summary != null && weather != null) {
+        if (txt_summary!=null && weather != null) {
             txt_summary.setText(weather.getSummary());
             txt_humidity.setText(weather.getHumidity() + "");
             txt_windSpeed.setText(weather.getWindSpeed() + "");

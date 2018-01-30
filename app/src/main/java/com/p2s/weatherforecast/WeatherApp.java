@@ -1,6 +1,7 @@
 package com.p2s.weatherforecast;
 
 import android.app.Application;
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +11,7 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
- * Created by MonkeyFish on 11/9/15.
+ * Created by TacoEater on 11/9/15.
  */
 public class WeatherApp extends Application {
     private static WeatherApp mInstance;
@@ -40,6 +41,10 @@ public class WeatherApp extends Application {
     }
     public static WeatherApp getInstance() {
         return mInstance;
+    }
+
+    public static boolean canMakeSmores() {
+        return(Build.VERSION.SDK_INT> Build.VERSION_CODES.LOLLIPOP_MR1);
     }
 
 }

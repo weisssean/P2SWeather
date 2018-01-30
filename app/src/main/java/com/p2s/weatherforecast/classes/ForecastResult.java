@@ -3,7 +3,7 @@ package com.p2s.weatherforecast.classes;
 import android.util.Log;
 
 /**
- * Created by MonkeyFish on 11/9/15.
+ * Created by TacoEater on 11/9/15.
  */
 public class ForecastResult {
     private double longitude;
